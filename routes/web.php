@@ -72,10 +72,12 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
 
     Route::get('/categories', [AdminCategoryController::class, 'index'])->name('categories.index');
     Route::post('/categories', [AdminCategoryController::class, 'store'])->name('categories.store');
+    Route::put('/categories/{category}', [AdminCategoryController::class, 'update'])->name('categories.update');
     Route::delete('/categories/{category}', [AdminCategoryController::class, 'destroy'])->name('categories.destroy');
 
     Route::get('/tags', [AdminTagController::class, 'index'])->name('tags.index');
     Route::post('/tags', [AdminTagController::class, 'store'])->name('tags.store');
+    Route::put('/tags/{tag}', [AdminTagController::class, 'update'])->name('tags.update');
     Route::delete('/tags/{tag}', [AdminTagController::class, 'destroy'])->name('tags.destroy');
 
     Route::get('/comments', [AdminCommentController::class, 'index'])->name('comments.index');
@@ -84,6 +86,7 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
 
     Route::get('/epapers', [AdminEpaperController::class, 'index'])->name('epapers.index');
     Route::post('/epapers', [AdminEpaperController::class, 'store'])->name('epapers.store');
+    Route::put('/epapers/{epaper}', [AdminEpaperController::class, 'update'])->name('epapers.update');
     Route::delete('/epapers/{epaper}', [AdminEpaperController::class, 'destroy'])->name('epapers.destroy');
 
     Route::get('/subscribers', [AdminSubscriberController::class, 'index'])->name('subscribers.index');

@@ -11,7 +11,7 @@ class TagController extends Controller
 {
     public function index()
     {
-        $tags = Tag::withCount('articles')->latest()->get();
+        $tags = Tag::withCount('articles')->latest()->paginate(15);
         return view('admin.tags.index', compact('tags'));
     }
 
@@ -24,6 +24,18 @@ class TagController extends Controller
         );
 
         return back()->with('status', 'ট্যাগ যুক্ত হয়েছে');
+    }
+
+    public function update(Request $request, Tag $tag)
+    {
+        $data = $request->validate(['name' => 'required|string|max:100']);
+
+        $tag->update([
+            'name' => $data['name'],
+            'slug' => Str::slug($data['name']),
+        ]);
+
+        return back()->with('status', 'ট্যাগ আপডেট হয়েছে');
     }
 
     public function destroy(Tag $tag)

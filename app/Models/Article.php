@@ -10,9 +10,19 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class Article extends Model
 {
     protected $fillable = [
-        'title', 'slug', 'excerpt', 'content', 'thumbnail',
-        'category_id', 'user_id', 'is_featured', 'status',
-        'type', 'video_url', 'views_count', 'published_at',
+        'title',
+        'slug',
+        'excerpt',
+        'content',
+        'thumbnail',
+        'category_id',
+        'user_id',
+        'is_featured',
+        'status',
+        'type',
+        'video_url',
+        'views_count',
+        'published_at',
     ];
 
     protected $casts = [
@@ -50,10 +60,10 @@ class Article extends Model
         return 'slug';
     }
 
-        public function scopePublished($query)
+    public function scopePublished($query)
     {
         return $query->where('status', 'published')
-                     ->where('published_at', '<=', now());
+            ->where('published_at', '<=', now());
     }
 
     /**
@@ -72,4 +82,3 @@ class Article extends Model
             : asset('storage/' . $this->thumbnail);
     }
 }
-

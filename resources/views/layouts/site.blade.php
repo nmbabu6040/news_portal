@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="bn">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -9,19 +10,53 @@
         <meta property="og:image" content="@yield('meta_image')">
     @endif
     <link rel="alternate" type="application/rss+xml" title="RSS Feed" href="{{ route('feed') }}">
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
     <style>
-        body { font-family: 'Noto Sans Bengali', sans-serif; background:#f5f5f5; }
-        .navbar-brand { font-weight:700; font-size:1.6rem; color:#c00 !important; }
-        .breaking-bar { background:#c00; color:#fff; padding:.4rem 0; font-size:.9rem; }
-        .article-card img { height:180px; object-fit:cover; }
-        .category-badge { font-size:.75rem; }
-        a { text-decoration:none; }
-        footer { background:#1a1a1a; color:#ccc; padding:2rem 0; margin-top:3rem; }
+        body {
+            font-family: 'Noto Sans Bengali', sans-serif;
+            background: #f5f5f5;
+        }
+
+        .navbar-brand {
+            font-weight: 700;
+            font-size: 1.6rem;
+            color: #c00 !important;
+        }
+
+        .breaking-bar {
+            background: #c00;
+            color: #fff;
+            padding: .4rem 0;
+            font-size: .9rem;
+        }
+
+        .article-card img {
+            height: 180px;
+            object-fit: cover;
+        }
+
+        .category-badge {
+            font-size: .75rem;
+        }
+
+        a {
+            text-decoration: none;
+        }
+
+        footer {
+            background: #1a1a1a;
+            color: #ccc;
+            padding: 2rem 0;
+            margin-top: 3rem;
+        }
     </style>
     @stack('styles')
 </head>
+
 <body>
     <div class="breaking-bar">
         <div class="container d-flex align-items-center overflow-hidden">
@@ -72,7 +107,8 @@
             <p class="mb-2">নিউজলেটার সাবস্ক্রাইব করুন</p>
             <form action="{{ route('subscribe') }}" method="POST" class="d-flex justify-content-center gap-2 mb-3">
                 @csrf
-                <input type="email" name="email" class="form-control" style="max-width:250px;" placeholder="আপনার ইমেইল" required>
+                <input type="email" name="email" class="form-control" style="max-width:250px;"
+                    placeholder="আপনার ইমেইল" required>
                 <button class="btn btn-danger">সাবস্ক্রাইব</button>
             </form>
             <p class="mb-1">© {{ date('Y') }} নিউজ পোর্টাল। সর্বস্বত্ব সংরক্ষিত।</p>
@@ -83,4 +119,5 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     @stack('scripts')
 </body>
+
 </html>

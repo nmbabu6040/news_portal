@@ -47,7 +47,7 @@ class ArticleSeeder extends Seeder
                     'slug' => Str::slug($seed . '-' . Str::random(5)),
                     'excerpt' => 'এই প্রতিবেদনে বিস্তারিত তুলে ধরা হয়েছে সংশ্লিষ্ট বিষয়ের গুরুত্বপূর্ণ দিকগুলো।',
                     'content' => "বিস্তারিত প্রতিবেদন: {$fullTitle}\n\nএখানে সম্পূর্ণ সংবাদের বিস্তারিত বিবরণ যুক্ত করা হবে। এই কনটেন্ট এডিটর প্যানেল থেকে সহজেই পরিবর্তনযোগ্য।",
-                    'thumbnail' => "https://picsum.photos/seed/{$seed}/800/450",
+                    'thumbnail' => "https://placehold.co/800x450/c00000/white?text=" . urlencode($category->name),
                     'category_id' => $category->id,
                     'user_id' => $author->id,
                     'is_featured' => $i === 0,
@@ -61,7 +61,7 @@ class ArticleSeeder extends Seeder
                 if ($type === 'gallery') {
                     for ($p = 1; $p <= 3; $p++) {
                         $article->photos()->create([
-                            'image_path' => "https://picsum.photos/seed/{$seed}-photo-{$p}/600/400",
+                            'image_path' => "https://placehold.co/600x400/333/white?text=Photo+{$p}",
                             'caption' => "নমুনা ছবি {$p}",
                         ]);
                     }
