@@ -11,6 +11,7 @@ use App\Http\Controllers\AuthorController;
 use App\Http\Controllers\SubscriberController;
 use App\Http\Controllers\EpaperController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\PageController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\ArticleController as AdminArticleController;
 use App\Http\Controllers\Admin\CategoryController as AdminCategoryController;
@@ -19,6 +20,7 @@ use App\Http\Controllers\Admin\CommentController as AdminCommentController;
 use App\Http\Controllers\Admin\EpaperController as AdminEpaperController;
 use App\Http\Controllers\Admin\SubscriberController as AdminSubscriberController;
 use App\Http\Controllers\Admin\SettingController as AdminSettingController;
+use App\Http\Controllers\Admin\PageController as AdminPageController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -35,6 +37,10 @@ Route::post('/article/{article:slug}/comment', [CommentController::class, 'store
 Route::get('/author/{user}', [AuthorController::class, 'show'])->name('author.show');
 Route::get('/epaper', [EpaperController::class, 'index'])->name('epaper');
 Route::post('/subscribe', [SubscriberController::class, 'store'])->name('subscribe');
+
+
+// ডায়নামিক পেজ রুট (সব পাবলিক রুটের নিচে রাখা ভালো)
+Route::get('/page/{slug}', [PageController::class, 'show'])->name('page.show');
 
 // SEO / সিন্ডিকেশন
 Route::get('/sitemap.xml', [SitemapController::class, 'index']);
@@ -92,6 +98,15 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
 
     Route::get('/subscribers', [AdminSubscriberController::class, 'index'])->name('subscribers.index');
     Route::delete('/subscribers/{subscriber}', [AdminSubscriberController::class, 'destroy'])->name('subscribers.destroy');
+
+
+    // Page CRUD
+    Route::get('/pages', [AdminPageController::class, 'index'])->name('pages.index');
+    Route::get('/pages/create', [AdminPageController::class, 'create'])->name('pages.create');
+    Route::post('/pages', [AdminPageController::class, 'store'])->name('pages.store');
+    Route::get('/pages/{page}/edit', [AdminPageController::class, 'edit'])->name('pages.edit');
+    Route::put('/pages/{page}', [AdminPageController::class, 'update'])->name('pages.update');
+    Route::delete('/pages/{page}', [AdminPageController::class, 'destroy'])->name('pages.destroy');
 
     Route::get('/settings', [AdminSettingController::class, 'edit'])->name('settings.edit');
     Route::put('/settings', [AdminSettingController::class, 'update'])->name('settings.update');

@@ -106,6 +106,7 @@
             border-radius: .5rem;
         }
     </style>
+    @stack('styles')
 </head>
 
 <body>
@@ -118,6 +119,10 @@
             <a href="{{ route('admin.articles.index') }}"
                 class="{{ request()->routeIs('admin.articles.*') ? 'active' : '' }}"><i class="bi bi-file-text"></i>
                 আর্টিকেল</a>
+            <a href="{{ route('admin.pages.index') }}"
+                class="{{ request()->routeIs('admin.articles.*') ? 'active' : '' }}"><i
+                    class="bi bi-file-earmark-text"></i> পেজসমূহ
+            </a>
             <a href="{{ route('admin.categories.index') }}"
                 class="{{ request()->routeIs('admin.categories.*') ? 'active' : '' }}"><i class="bi bi-grid"></i>
                 ক্যাটাগরি</a>
@@ -146,6 +151,7 @@
         </div>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    @stack('scripts')
 </body>
 
 </html>

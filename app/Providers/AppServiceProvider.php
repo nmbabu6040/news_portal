@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use App\Models\Article;
 use App\Models\Setting;
+use App\Models\Category;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Pagination\Paginator;
@@ -33,6 +34,12 @@ class AppServiceProvider extends ServiceProvider
             $view->with(
                 'tickerHeadlines',
                 Article::published()->latest('published_at')->take(6)->pluck('title', 'slug')
+            );
+
+            // ডায়নামিক ক্যাটাগরি পাঠানো হচ্ছে (যেমন: ৮টি ক্যাটাগরি)
+            $view->with(
+                'footerCategories',
+                Category::take(8)->get() // আপনার মডেলের পছন্দমত কোয়েরি দিতে পারেন
             );
 
             $view->with('settings', Setting::current());
