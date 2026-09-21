@@ -8,6 +8,7 @@
         rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="icon" href="https://www.prothomalo.com/default.svg">
     <style>
         body {
             font-family: 'Noto Sans Bengali', sans-serif;
@@ -131,7 +132,9 @@
             <a href="{{ route('admin.subscribers.index') }}"
                 class="{{ request()->routeIs('admin.subscribers.*') ? 'active' : '' }}"><i class="bi bi-envelope"></i>
                 সাবস্ক্রাইবার</a>
-		<a href="{{ route('admin.settings.edit') }}" class="{{ request()->routeIs('admin.settings.*') ? 'active' : '' }}"><i class="bi bi-gear"></i> সেটিংস</a>
+            <a href="{{ route('admin.settings.edit') }}"
+                class="{{ request()->routeIs('admin.settings.*') ? 'active' : '' }}"><i class="bi bi-gear"></i>
+                সেটিংস</a>
             <hr class="text-white-50">
             <a href="{{ route('home') }}"><i class="bi bi-globe"></i> সাইট দেখুন</a>
         </div>

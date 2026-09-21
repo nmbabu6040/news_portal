@@ -9,6 +9,7 @@
     @hasSection('meta_image')
         <meta property="og:image" content="@yield('meta_image')">
     @endif
+    <link rel="icon" href="https://www.prothomalo.com/default.svg">
     <link rel="alternate" type="application/rss+xml" title="RSS Feed" href="{{ route('feed') }}">
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@400;500;600;700&display=swap"
         rel="stylesheet">
