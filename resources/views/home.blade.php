@@ -2,13 +2,33 @@
 
 @section('content')
 
+    {{-- থাম্বনেইল পাথ রিটার্ন করার ইনলাইন Blade Helper/Closure --}}
+    @php
+        $getThumbnail = function ($article, $defaultUrl = 'https://picsum.photos/300/180') {
+            if (!empty($article->thumbnail)) {
+                // যদি Base64 SVG বাExternal URL (http/https) হয়
+                if (\Illuminate\Support\Str::startsWith($article->thumbnail, ['data:', 'http://', 'https://'])) {
+                    return $article->thumbnail;
+                }
+                // যদি Storage এ থাকা পাথ হয়
+                return asset('storage/' . $article->thumbnail);
+            }
+
+            if (!empty($article->thumbnail_url)) {
+                return $article->thumbnail_url;
+            }
+
+            return $defaultUrl;
+        };
+    @endphp
+
     {{-- ===== হিরো সেকশন: প্রধান খবর + সেকেন্ডারি খবর + সর্বাধিক পঠিত ===== --}}
     @if ($featured)
         <div class="row mb-4 g-3">
             <div class="col-lg-6">
                 <a href="{{ route('article.show', $featured->slug) }}" class="text-decoration-none text-dark">
-                    <img src="{{ $featured->thumbnail_url ?: 'https://picsum.photos/800/450' }}"
-                        class="img-fluid rounded mb-2" style="height:380px;width:100%;object-fit:cover;" alt="">
+                    <img src="{{ $getThumbnail($featured, 'https://picsum.photos/800/450') }}" class="img-fluid rounded mb-2"
+                        style="height:380px;width:100%;object-fit:cover;" alt="{{ $featured->title }}">
                     <span class="badge bg-danger category-badge">{{ $featured->category->name }}</span>
                     <h2 class="mt-2">{{ $featured->title }}</h2>
                     <p class="text-muted">{{ $featured->excerpt }}</p>
@@ -18,8 +38,9 @@
             <div class="col-lg-3">
                 @foreach ($secondaryFeatured as $item)
                     <a href="{{ route('article.show', $item->slug) }}" class="text-decoration-none text-dark d-block mb-3">
-                        <img src="{{ $item->thumbnail_url ?: 'https://picsum.photos/400/220' }}"
-                            class="img-fluid rounded mb-2" style="height:170px;width:100%;object-fit:cover;" alt="">
+                        <img src="{{ $getThumbnail($item, 'https://picsum.photos/400/220') }}"
+                            class="img-fluid rounded mb-2" style="height:170px;width:100%;object-fit:cover;"
+                            alt="{{ $item->title }}">
                         <span class="badge bg-secondary category-badge">{{ $item->category->name }}</span>
                         <h6 class="mt-1">{{ $item->title }}</h6>
                     </a>
@@ -46,8 +67,8 @@
         @foreach ($latest as $article)
             <div class="col-md-3 mb-4">
                 <div class="card article-card h-100">
-                    <img src="{{ $article->thumbnail_url ?: 'https://picsum.photos/300/180' }}" class="card-img-top"
-                        alt="">
+                    <img src="{{ $getThumbnail($article, 'https://picsum.photos/300/180') }}" class="card-img-top"
+                        alt="{{ $article->title }}">
                     <div class="card-body">
                         <span class="badge bg-secondary category-badge">{{ $article->category->name }}</span>
                         <h6 class="mt-2"><a href="{{ route('article.show', $article->slug) }}"
@@ -69,9 +90,9 @@
                     @foreach ($category->articles as $article)
                         <div class="col-md-3 mb-3">
                             <a href="{{ route('article.show', $article->slug) }}" class="text-dark">
-                                <img src="{{ $article->thumbnail_url ?: 'https://picsum.photos/300/160' }}"
+                                <img src="{{ $getThumbnail($article, 'https://picsum.photos/300/160') }}"
                                     class="img-fluid rounded mb-1" style="height:150px;width:100%;object-fit:cover;"
-                                    alt="">
+                                    alt="{{ $article->title }}">
                                 <div class="small">{{ $article->title }}</div>
                             </a>
                         </div>
@@ -90,8 +111,9 @@
                 @foreach ($videos as $video)
                     <div class="col-md-3 mb-3">
                         <a href="{{ route('article.show', $video->slug) }}" class="text-dark position-relative d-block">
-                            <img src="{{ $video->thumbnail_url ?: 'https://picsum.photos/300/180' }}"
-                                class="img-fluid rounded" style="height:160px;width:100%;object-fit:cover;" alt="">
+                            <img src="{{ $getThumbnail($video, 'https://picsum.photos/300/180') }}"
+                                class="img-fluid rounded" style="height:160px;width:100%;object-fit:cover;"
+                                alt="{{ $video->title }}">
                             <span
                                 class="position-absolute top-50 start-50 translate-middle bg-danger rounded-circle d-flex align-items-center justify-content-center"
                                 style="width:45px;height:45px;">
@@ -113,8 +135,9 @@
                 @foreach ($galleries as $gallery)
                     <div class="col-md-3 mb-3">
                         <a href="{{ route('article.show', $gallery->slug) }}" class="text-dark position-relative d-block">
-                            <img src="{{ $gallery->thumbnail_url ?: 'https://picsum.photos/300/180' }}"
-                                class="img-fluid rounded" style="height:160px;width:100%;object-fit:cover;" alt="">
+                            <img src="{{ $getThumbnail($gallery, 'https://picsum.photos/300/180') }}"
+                                class="img-fluid rounded" style="height:160px;width:100%;object-fit:cover;"
+                                alt="{{ $gallery->title }}">
                             <span
                                 class="position-absolute bottom-0 end-0 bg-dark bg-opacity-75 text-white small px-2 py-1 rounded-top-start">
                                 <i class="bi bi-images"></i> গ্যালারি

@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Storage;
 
 class Article extends Model
 {
@@ -71,14 +73,35 @@ class Article extends Model
      * external URL (e.g. seeded demo data) or a local storage path
      * (e.g. uploaded via the admin panel).
      */
+    // public function getThumbnailUrlAttribute(): ?string
+    // {
+    //     if (! $this->thumbnail) {
+    //         return null;
+    //     }
+
+    //     return str_starts_with($this->thumbnail, 'http')
+    //         ? $this->thumbnail
+    //         : asset('storage/' . $this->thumbnail);
+    // }
+
     public function getThumbnailUrlAttribute(): ?string
     {
+        // যদি thumbnail ফিল্ডে কিছুই না থাকে
         if (! $this->thumbnail) {
             return null;
         }
 
-        return str_starts_with($this->thumbnail, 'http')
-            ? $this->thumbnail
-            : asset('storage/' . $this->thumbnail);
+        // ১. যদি সিডার/এক্সটার্নাল ইউআরএল (http, https বা base64/data:) হয়
+        if (Str::startsWith($this->thumbnail, ['http://', 'https://', 'data:'])) {
+            return $this->thumbnail;
+        }
+
+        // ২. যদি লোকালি আপলোড করা ফাইল হয় এবং স্টোরেজে ফাইলটি সত্যই বিদ্যমান থাকে
+        if (Storage::disk('public')->exists($this->thumbnail)) {
+            return asset('storage/' . $this->thumbnail);
+        }
+
+        // ৩. ফাইল পাথ ডাটাবেজে আছে কিন্তু স্টোরেজে ফাইলটি নেই (ফাইল ডিলিট হয়ে গেছে বা পাওয়া যাচ্ছে না)
+        return null;
     }
 }

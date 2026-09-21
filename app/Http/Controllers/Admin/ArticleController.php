@@ -9,6 +9,7 @@ use App\Models\Photo;
 use App\Models\Tag;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Storage;
 
 class ArticleController extends Controller
 {
@@ -35,6 +36,10 @@ class ArticleController extends Controller
             $data['thumbnail'] = $request->file('thumbnail')->store('thumbnails', 'public');
         }
 
+        if ($data['status'] === 'published') {
+            $data['published_at'] = now();
+        }
+
         $article = Article::create($data);
         $article->tags()->sync($this->tagIds($request));
         $this->storeGalleryPhotos($request, $article);
@@ -53,59 +58,27 @@ class ArticleController extends Controller
     {
         $data = $this->validated($request);
 
+        // ১. নতুন ফাইল আপডেট প্রসেসিং
         if ($request->hasFile('thumbnail')) {
+            if ($article->thumbnail && !\Illuminate\Support\Str::startsWith($article->thumbnail, ['data:', 'http'])) {
+                \Illuminate\Support\Facades\Storage::disk('public')->delete($article->thumbnail);
+            }
             $data['thumbnail'] = $request->file('thumbnail')->store('thumbnails', 'public');
+        } else {
+            unset($data['thumbnail']); // নতুন ছবি না দিলে পুরানোটাই থাকবে
         }
 
+        // ২. স্ট্যাটাস হ্যান্ডলিং
+        if ($data['status'] === 'published' && !$article->published_at) {
+            $data['published_at'] = now();
+        }
+
+        // ৩. ডাটাবেজ আপডেট
         $article->update($data);
         $article->tags()->sync($this->tagIds($request));
         $this->storeGalleryPhotos($request, $article);
 
         return redirect()->route('admin.articles.index')->with('status', 'আর্টিকেল আপডেট হয়েছে');
-    }
-
-    public function destroyPhoto(Photo $photo)
-    {
-        $photo->delete();
-        return back()->with('status', 'ছবি ডিলিট হয়েছে');
-    }
-
-    /**
-     * Turn a comma-separated "tags" input (names) into tag IDs,
-     * creating any tag that doesn't exist yet.
-     */
-    private function tagIds(Request $request): array
-    {
-        $names = array_filter(array_map('trim', explode(',', (string) $request->input('tags'))));
-
-        return array_map(function ($name) {
-            return Tag::firstOrCreate(
-                ['slug' => Str::slug($name)],
-                ['name' => $name, 'slug' => Str::slug($name)]
-            )->id;
-        }, $names);
-    }
-
-    /**
-     * Store any uploaded gallery photos (used when article type = gallery).
-     */
-    private function storeGalleryPhotos(Request $request, Article $article): void
-    {
-        if (! $request->hasFile('gallery_photos')) {
-            return;
-        }
-
-        foreach ($request->file('gallery_photos') as $photo) {
-            $article->photos()->create([
-                'image_path' => $photo->store('gallery', 'public'),
-            ]);
-        }
-    }
-
-    public function destroy(Article $article)
-    {
-        $article->delete();
-        return back()->with('status', 'আর্টিকেল ডিলিট হয়েছে');
     }
 
     private function validated(Request $request): array
@@ -118,16 +91,56 @@ class ArticleController extends Controller
             'status' => 'required|in:draft,published',
             'type' => 'required|in:article,gallery,video',
             'video_url' => 'nullable|url',
-            'is_featured' => 'boolean',
-            'thumbnail' => 'nullable|image|max:2048',
+            'is_featured' => 'nullable',
+            // 'image' রুল তুলে 'file' রাখা হয়েছে যাতে AVIF বা অন্য ফরম্যাটের জন্য এরর না আসে
+            'thumbnail' => 'nullable|file|mimes:jpeg,png,jpg,gif,svg,webp,avif|max:10240',
+            'gallery_photos.*' => 'nullable|file|mimes:jpeg,png,jpg,gif,svg,webp,avif|max:10240',
         ]);
 
         $validated['is_featured'] = $request->boolean('is_featured');
-        if ($validated['status'] === 'published') {
-            $validated['published_at'] = now();
-        }
 
-        unset($validated['thumbnail']);
         return $validated;
+    }
+
+    public function destroyPhoto(Photo $photo)
+    {
+        if ($photo->image_path && !Str::startsWith($photo->image_path, ['data:', 'http'])) {
+            Storage::disk('public')->delete($photo->image_path);
+        }
+        $photo->delete();
+        return back()->with('status', 'ছবি ডিলিট হয়েছে');
+    }
+
+    private function tagIds(Request $request): array
+    {
+        $names = array_filter(array_map('trim', explode(',', (string) $request->input('tags'))));
+
+        return array_map(function ($name) {
+            return Tag::firstOrCreate(
+                ['slug' => Str::slug($name)],
+                ['name' => $name, 'slug' => Str::slug($name)]
+            )->id;
+        }, $names);
+    }
+
+    private function storeGalleryPhotos(Request $request, Article $article): void
+    {
+        if ($request->hasFile('gallery_photos')) {
+            foreach ($request->file('gallery_photos') as $photo) {
+                $path = $photo->store('gallery', 'public');
+                $article->photos()->create([
+                    'image_path' => $path,
+                ]);
+            }
+        }
+    }
+
+    public function destroy(Article $article)
+    {
+        if ($article->thumbnail && !Str::startsWith($article->thumbnail, ['data:', 'http'])) {
+            Storage::disk('public')->delete($article->thumbnail);
+        }
+        $article->delete();
+        return back()->with('status', 'আর্টিকেল ডিলিট হয়েছে');
     }
 }

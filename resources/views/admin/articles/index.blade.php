@@ -4,10 +4,11 @@
         <h3>আর্টিকেল সমূহ</h3>
         <a href="{{ route('admin.articles.create') }}" class="btn btn-danger">+ নতুন আর্টিকেল</a>
     </div>
-    <table class="table bg-white">
+    <table class="table bg-white align-middle">
         <thead>
             <tr>
-                <th>ক্রম</th>
+                <th>#</th>
+                <th>ছবি</th>
                 <th>শিরোনাম</th>
                 <th>ক্যাটাগরি</th>
                 <th>স্ট্যাটাস</th>
@@ -18,13 +19,24 @@
             @foreach ($articles as $article)
                 <tr>
                     <td>{{ $articles->firstItem() + $loop->index }}</td>
+                    <td>
+                        @if ($article->thumbnail_url)
+                            <img src="{{ $article->thumbnail_url }}" style="width:60px;height:45px;object-fit:cover;"
+                                class="rounded border">
+                        @else
+                            <span class="badge bg-danger-subtle text-danger border border-danger" style="white-space:nowrap;">
+                                <i class="bi bi-exclamation-triangle"></i> ছবি নেই
+                            </span>
+                        @endif
+                    </td>
                     <td>{{ $article->title }}</td>
                     <td>{{ $article->category->name }}</td>
                     <td><span
                             class="badge bg-{{ $article->status === 'published' ? 'success' : 'secondary' }}">{{ $article->status }}</span>
                     </td>
                     <td>
-                        <a href="{{ route('admin.articles.edit', $article) }}" class="btn btn-sm btn-outline-primary">এডিট</a>
+                        <a href="{{ route('admin.articles.edit', $article) }}"
+                            class="btn btn-sm btn-outline-primary">এডিট</a>
                         <form action="{{ route('admin.articles.destroy', $article) }}" method="POST" class="d-inline">
                             @csrf @method('DELETE')
                             <button class="btn btn-sm btn-outline-danger"

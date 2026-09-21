@@ -131,6 +131,7 @@
             <a href="{{ route('admin.subscribers.index') }}"
                 class="{{ request()->routeIs('admin.subscribers.*') ? 'active' : '' }}"><i class="bi bi-envelope"></i>
                 সাবস্ক্রাইবার</a>
+		<a href="{{ route('admin.settings.edit') }}" class="{{ request()->routeIs('admin.settings.*') ? 'active' : '' }}"><i class="bi bi-gear"></i> সেটিংস</a>
             <hr class="text-white-50">
             <a href="{{ route('home') }}"><i class="bi bi-globe"></i> সাইট দেখুন</a>
         </div>
