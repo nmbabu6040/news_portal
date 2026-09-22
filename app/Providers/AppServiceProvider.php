@@ -44,5 +44,14 @@ class AppServiceProvider extends ServiceProvider
 
             $view->with('settings', Setting::current());
         });
+
+        // Breeze-এর লগইন/রেজিস্টার পেজ ও ড্যাশবোর্ড নেভবারেও সাইটের সেটিংস দরকার
+        View::composer(['layouts.guest', 'layouts.navigation'], function ($view) {
+            $view->with('settings', Setting::current());
+        });
+
+        View::composer('*', function ($view) {
+            $view->with('setting', Setting::first());
+        });
     }
 }

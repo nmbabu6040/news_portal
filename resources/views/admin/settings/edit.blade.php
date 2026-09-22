@@ -24,8 +24,22 @@
                 <input type="text" name="site_name" class="form-control"
                     value="{{ old('site_name', $settings->site_name) }}" required>
             </div>
+
             <div class="row">
-                <div class="col-md-6 mb-3">
+                <div class="col-md-4 mb-3">
+                    <label class="form-label fw-semibold">সাইট ফেভিকন (Favicon / Site Icon)</label>
+
+                    @if ($settings->favicon_url)
+                        <div class="mb-2"><img src="{{ $settings->favicon_url }}" style="height:50px;"
+                                class="border rounded p-1"></div>
+                    @endif
+                    <input type="file" name="favicon" class="form-control" accept="image/*">
+                    @error('favicon')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
+                </div>
+
+                <div class="col-md-4 mb-3">
                     <label class="form-label">হেডার লোগো</label>
                     @if ($settings->header_logo_url)
                         <div class="mb-2"><img src="{{ $settings->header_logo_url }}" style="height:50px;"
@@ -33,14 +47,20 @@
                     @endif
                     <input type="file" name="header_logo" class="form-control" accept="image/*">
                     <small class="text-muted">খালি রাখলে টেক্সট লোগো (সাইটের নাম) দেখাবে।</small>
+                    @error('header_logo')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
                 </div>
-                <div class="col-md-6 mb-3">
+                <div class="col-md-4 mb-3">
                     <label class="form-label">ফুটার লোগো</label>
                     @if ($settings->footer_logo_url)
                         <div class="mb-2"><img src="{{ $settings->footer_logo_url }}" style="height:50px;"
                                 class="border rounded p-1 bg-dark"></div>
                     @endif
                     <input type="file" name="footer_logo" class="form-control" accept="image/*">
+                    @error('footer_logo')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
                 </div>
             </div>
         </div>

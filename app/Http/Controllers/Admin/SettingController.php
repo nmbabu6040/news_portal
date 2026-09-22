@@ -20,6 +20,7 @@ class SettingController extends Controller
 
         $data = $request->validate([
             'site_name' => 'required|string|max:255',
+            'favicon' => 'nullable|file|mimes:jpg,jpeg,png,gif,webp,svg|max:2048',
             'header_logo' => 'nullable|file|mimes:jpg,jpeg,png,gif,webp,svg|max:2048',
             'footer_logo' => 'nullable|file|mimes:jpg,jpeg,png,gif,webp,svg|max:2048',
             'about_text' => 'nullable|string',
@@ -39,6 +40,10 @@ class SettingController extends Controller
 
         if ($request->hasFile('footer_logo')) {
             $data['footer_logo'] = $request->file('footer_logo')->store('settings', 'public');
+        }
+
+        if ($request->hasFile('favicon')) {
+            $data['favicon'] = $request->file('favicon')->store('settings', 'public');
         }
 
         $settings->update($data);

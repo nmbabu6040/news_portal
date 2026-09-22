@@ -11,7 +11,17 @@
         <meta property="og:image" content="@yield('meta_image')">
     @endif
 
-    <link rel="icon" href="https://www.prothomalo.com/default.svg" type="image/svg+xml">
+    {{-- <link rel="icon" href="https://www.prothomalo.com/default.svg" type="image/svg+xml"> --}}
+
+    <!-- Site Icon / Favicon Dynamic Link -->
+    @if ($setting && $setting->favicon)
+        <link rel="icon" type="image/x-icon" href="{{ asset('storage/' . $setting->favicon) }}">
+        <link rel="shortcut icon" href="{{ asset('storage/' . $setting->favicon) }}">
+        <link rel="apple-touch-icon" href="{{ asset('storage/' . $setting->favicon) }}">
+    @else
+        <!-- ডিফল্ট আইকন (যদি ডাটাবেজে না থাকে) -->
+        <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}">
+    @endif
     <link rel="alternate" type="application/rss+xml" title="RSS Feed" href="{{ route('feed') }}">
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@400;500;600;700&display=swap"
         rel="stylesheet">
@@ -210,12 +220,25 @@
                         <button class="btn btn-outline-secondary" type="submit"><i class="bi bi-search"></i></button>
                     </div>
                 </form>
+
                 @auth
-                    <a href="{{ route('dashboard') }}" class="btn btn-sm btn-outline-danger"><i
-                            class="bi bi-person-circle"></i></a>
+                    {{-- User jodi Admin hoy tobe Admin Dashboard --}}
+                    @if (auth()->user()->isAdmin())
+                        {{-- Apnar User model-er attribute অনুযায়ী (যেমন: role == 'admin') --}}
+                        <a href="{{ route('admin.dashboard') }}" class="btn btn-sm btn-outline-danger"
+                            title="Admin Dashboard">
+                            <i class="bi bi-speedometer2"></i>
+                        </a>
+                    @else
+                        {{-- Sadharon User hole Profile Page --}}
+                        <a href="{{ route('profile.edit') }}" class="btn btn-sm btn-outline-danger" title="My Profile">
+                            <i class="bi bi-person-circle"></i>
+                        </a>
+                    @endif
                 @else
-                    <a href="{{ route('login') }}" class="btn btn-sm btn-danger text-nowrap"><i
-                            class="bi bi-box-arrow-in-right"></i> সাইন ইন</a>
+                    <a href="{{ route('login') }}" class="btn btn-sm btn-danger text-nowrap">
+                        <i class="bi bi-box-arrow-in-right"></i> সাইন ইন
+                    </a>
                 @endauth
             </div>
         </div>

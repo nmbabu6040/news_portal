@@ -12,6 +12,7 @@ use App\Http\Controllers\SubscriberController;
 use App\Http\Controllers\EpaperController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PageController;
+use App\Http\Controllers\Admin\AuthController as AdminAuthController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\ArticleController as AdminArticleController;
 use App\Http\Controllers\Admin\CategoryController as AdminCategoryController;
@@ -21,6 +22,7 @@ use App\Http\Controllers\Admin\EpaperController as AdminEpaperController;
 use App\Http\Controllers\Admin\SubscriberController as AdminSubscriberController;
 use App\Http\Controllers\Admin\SettingController as AdminSettingController;
 use App\Http\Controllers\Admin\PageController as AdminPageController;
+use App\Http\Controllers\Admin\UserController as AdminUserController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -37,9 +39,6 @@ Route::post('/article/{article:slug}/comment', [CommentController::class, 'store
 Route::get('/author/{user}', [AuthorController::class, 'show'])->name('author.show');
 Route::get('/epaper', [EpaperController::class, 'index'])->name('epaper');
 Route::post('/subscribe', [SubscriberController::class, 'store'])->name('subscribe');
-
-
-// ডায়নামিক পেজ রুট (সব পাবলিক রুটের নিচে রাখা ভালো)
 Route::get('/page/{slug}', [PageController::class, 'show'])->name('page.show');
 
 // SEO / সিন্ডিকেশন
@@ -48,11 +47,11 @@ Route::get('/feed', [FeedController::class, 'index'])->name('feed');
 
 /*
 |--------------------------------------------------------------------------
-| Breeze-এর ডিফল্ট রুট (dashboard/profile) — এগুলো রাখা হলো, ডিলিট করবেন না
+| সাধারণ ইউজারের auth রুট (Breeze) — লগইন করলে ইউজার ড্যাশবোর্ড/প্রোফাইল দেখবে
 |--------------------------------------------------------------------------
 */
 Route::get('/dashboard', function () {
-    return redirect()->route('admin.dashboard');
+    return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
@@ -61,12 +60,25 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
+require __DIR__ . '/auth.php';
+
 /*
 |--------------------------------------------------------------------------
-| অ্যাডমিন রুট (লগইন প্রয়োজন)
+| অ্যাডমিন auth রুট (আলাদা লগইন পেজ — /admin/login)
 |--------------------------------------------------------------------------
 */
-Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () {
+Route::prefix('admin')->name('admin.')->group(function () {
+    Route::get('/login', [AdminAuthController::class, 'showLogin'])->name('login');
+    Route::post('/login', [AdminAuthController::class, 'login'])->name('login.submit');
+    Route::post('/logout', [AdminAuthController::class, 'logout'])->name('logout');
+});
+
+/*
+|--------------------------------------------------------------------------
+| অ্যাডমিন প্যানেল রুট (auth + admin role — দুটোই লাগবে)
+|--------------------------------------------------------------------------
+*/
+Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
 
     Route::get('/articles', [AdminArticleController::class, 'index'])->name('articles.index');
@@ -99,8 +111,6 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
     Route::get('/subscribers', [AdminSubscriberController::class, 'index'])->name('subscribers.index');
     Route::delete('/subscribers/{subscriber}', [AdminSubscriberController::class, 'destroy'])->name('subscribers.destroy');
 
-
-    // Page CRUD
     Route::get('/pages', [AdminPageController::class, 'index'])->name('pages.index');
     Route::get('/pages/create', [AdminPageController::class, 'create'])->name('pages.create');
     Route::post('/pages', [AdminPageController::class, 'store'])->name('pages.store');
@@ -110,6 +120,14 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
 
     Route::get('/settings', [AdminSettingController::class, 'edit'])->name('settings.edit');
     Route::put('/settings', [AdminSettingController::class, 'update'])->name('settings.update');
-});
 
-require __DIR__ . '/auth.php';
+
+    // Route section within admin middleware group:
+    Route::get('/users', [AdminUserController::class, 'index'])->name('users.index');
+    Route::get('/users/create', [AdminUserController::class, 'create'])->name('users.create');
+    Route::post('/users', [AdminUserController::class, 'store'])->name('users.store');
+    Route::get('/users/{user}/edit', [AdminUserController::class, 'edit'])->name('users.edit');
+    Route::put('/users/{user}', [AdminUserController::class, 'update'])->name('users.update');
+    Route::delete('/users/{user}', [AdminUserController::class, 'destroy'])->name('users.destroy');
+    Route::patch('/users/{user}/toggle-role', [AdminUserController::class, 'toggleRole'])->name('users.toggle-role');
+});

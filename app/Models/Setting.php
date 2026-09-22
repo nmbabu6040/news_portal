@@ -7,9 +7,18 @@ use Illuminate\Database\Eloquent\Model;
 class Setting extends Model
 {
     protected $fillable = [
-        'site_name', 'header_logo', 'footer_logo', 'about_text',
-        'address', 'phone', 'email',
-        'facebook_url', 'twitter_url', 'youtube_url', 'instagram_url',
+        'site_name',
+        'header_logo',
+        'footer_logo',
+        'about_text',
+        'address',
+        'phone',
+        'email',
+        'favicon',
+        'facebook_url',
+        'twitter_url',
+        'youtube_url',
+        'instagram_url',
         'footer_text',
     ];
 
@@ -30,5 +39,10 @@ class Setting extends Model
     public function getFooterLogoUrlAttribute(): ?string
     {
         return $this->footer_logo ? asset('storage/' . $this->footer_logo) : null;
+    }
+
+    public function getFaviconUrlAttribute(): ?string
+    {
+        return $this->favicon ? asset('storage/' . $this->favicon) : null;
     }
 }
