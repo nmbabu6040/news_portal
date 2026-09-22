@@ -146,9 +146,10 @@
         }
 
         .footer-logo {
-            height: 45px;
+            /* height: 45px; */
+            width: 200px;
             margin-bottom: 1rem;
-            filter: brightness(0) invert(1);
+            /* filter: brightness(0) invert(1); */
         }
 
         .tag-cloud a {
@@ -188,7 +189,8 @@
         <div class="container">
             <a class="navbar-brand" href="{{ route('home') }}">
                 @if ($settings->header_logo_url)
-                    <img src="{{ $settings->header_logo_url }}" alt="{{ $settings->site_name }}">
+                    <img src="{{ $settings->header_logo_url }}" alt="{{ $settings->site_name }}" class=""
+                        style="width: 140px; height: 80px; overflow: hidden;">
                 @else
                     {{ $settings->site_name }}
                 @endif
