@@ -57,5 +57,5 @@ ENV PORT=80 \
 
 EXPOSE 80
 
-# FrankenPHP web server mode (Caddy worker)
-CMD ["frankenphp", "run", "--config", "/etc/caddy/Caddyfile"]
+# Caddyfile ছাড়া সরাসরি FrankenPHP ওয়েবসাইট রান করার কমান্ড
+CMD ["frankenphp", "php-server", "--root", "/app/public"]
