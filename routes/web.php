@@ -5,6 +5,9 @@ use App\Http\Controllers\ArticleController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\SearchController;
 use App\Http\Controllers\CommentController;
+use App\Http\Controllers\LikeController;
+use App\Http\Controllers\ShareController;
+use App\Http\Controllers\Admin\AnalyticsController;
 use App\Http\Controllers\SitemapController;
 use App\Http\Controllers\FeedController;
 use App\Http\Controllers\AuthorController;
@@ -36,6 +39,8 @@ Route::get('/search', [SearchController::class, 'index'])->name('search');
 Route::get('/category/{category:slug}', [CategoryController::class, 'show'])->name('category.show');
 Route::get('/article/{article:slug}', [ArticleController::class, 'show'])->name('article.show');
 Route::post('/article/{article:slug}/comment', [CommentController::class, 'store'])->name('comment.store');
+Route::post('/article/{article:slug}/like', [LikeController::class, 'toggle'])->name('article.like');
+Route::post('/article/{article:slug}/share', [ShareController::class, 'increment'])->name('article.share');
 Route::get('/author/{user}', [AuthorController::class, 'show'])->name('author.show');
 Route::get('/epaper', [EpaperController::class, 'index'])->name('epaper');
 Route::post('/subscribe', [SubscriberController::class, 'store'])->name('subscribe');
@@ -130,4 +135,6 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::put('/users/{user}', [AdminUserController::class, 'update'])->name('users.update');
     Route::delete('/users/{user}', [AdminUserController::class, 'destroy'])->name('users.destroy');
     Route::patch('/users/{user}/toggle-role', [AdminUserController::class, 'toggleRole'])->name('users.toggle-role');
+
+    Route::get('/analytics', [AnalyticsController::class, 'index'])->name('analytics.index');
 });

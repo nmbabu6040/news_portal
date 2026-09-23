@@ -57,6 +57,18 @@ class Article extends Model
         return $this->hasMany(Photo::class);
     }
 
+
+    public function likes(): HasMany
+    {
+        return $this->hasMany(Like::class);
+    }
+
+
+    public function views(): HasMany
+    {
+        return $this->hasMany(ArticleView::class);
+    }
+
     public function getRouteKeyName(): string
     {
         return 'slug';

@@ -152,6 +152,10 @@
                 <i class="bi bi-speedometer2"></i> ড্যাশবোর্ড
             </a>
 
+            <a href="{{ route('admin.analytics.index') }}"
+                class="{{ request()->routeIs('admin.analytics.*') ? 'active' : '' }}"><i class="bi bi-graph-up"></i>
+                অ্যানালিটিক্স</a>
+
             <div class="sidebar-heading">সংবাদ ও কনটেন্ট</div>
             <a href="{{ route('admin.articles.index') }}"
                 class="{{ request()->routeIs('admin.articles.*') ? 'active' : '' }}">
@@ -161,7 +165,8 @@
                 class="{{ request()->routeIs('admin.categories.*') ? 'active' : '' }}">
                 <i class="bi bi-grid"></i> ক্যাটাগরি
             </a>
-            <a href="{{ route('admin.tags.index') }}" class="{{ request()->routeIs('admin.tags.*') ? 'active' : '' }}">
+            <a href="{{ route('admin.tags.index') }}"
+                class="{{ request()->routeIs('admin.tags.*') ? 'active' : '' }}">
                 <i class="bi bi-tags"></i> ট্যাগ
             </a>
 

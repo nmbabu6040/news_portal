@@ -1,6 +1,8 @@
 @extends('layouts.site')
 
 @section('content')
+    @include('partials.breadcrumb', ['items' => [['label' => $category->name]]])
+
     <h3 class="mb-4">{{ $category->name }}</h3>
     <div class="row">
         @foreach ($articles as $article)

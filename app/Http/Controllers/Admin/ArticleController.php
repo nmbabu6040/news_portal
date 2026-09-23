@@ -41,7 +41,7 @@ class ArticleController extends Controller
         }
 
         $article = Article::create($data);
-        $article->tags()->sync($this->tagIds($request));
+        $article->tags()->sync($request->input('tag_ids', []));
         $this->storeGalleryPhotos($request, $article);
 
         return redirect()->route('admin.articles.index')->with('status', 'আর্টিকেল তৈরি হয়েছে');
@@ -75,7 +75,7 @@ class ArticleController extends Controller
 
         // ৩. ডাটাবেজ আপডেট
         $article->update($data);
-        $article->tags()->sync($this->tagIds($request));
+        $article->tags()->sync($request->input('tag_ids', []));
         $this->storeGalleryPhotos($request, $article);
 
         return redirect()->route('admin.articles.index')->with('status', 'আর্টিকেল আপডেট হয়েছে');
@@ -111,17 +111,6 @@ class ArticleController extends Controller
         return back()->with('status', 'ছবি ডিলিট হয়েছে');
     }
 
-    private function tagIds(Request $request): array
-    {
-        $names = array_filter(array_map('trim', explode(',', (string) $request->input('tags'))));
-
-        return array_map(function ($name) {
-            return Tag::firstOrCreate(
-                ['slug' => Str::slug($name)],
-                ['name' => $name, 'slug' => Str::slug($name)]
-            )->id;
-        }, $names);
-    }
 
     private function storeGalleryPhotos(Request $request, Article $article): void
     {

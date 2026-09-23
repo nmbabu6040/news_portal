@@ -6,6 +6,13 @@
 @section('meta_image', $article->thumbnail_url ?: '')
 
 @section('content')
+
+    @include('partials.breadcrumb', [
+        'items' => [
+            ['label' => $article->category->name, 'url' => route('category.show', $article->category->slug)],
+            ['label' => $article->title],
+        ],
+    ])
     <div class="row">
         <div class="col-lg-8">
             <span class="badge bg-danger">{{ $article->category->name }}</span>
@@ -56,6 +63,15 @@
                 </div>
             @endif
 
+            {{-- লাইক বাটন --}}
+            <div class="mt-3">
+                <button type="button" id="likeBtn" data-article="{{ $article->slug }}" class="btn btn-outline-danger">
+                    <i class="bi bi-heart-fill"></i> লাইক (<span id="likeCount">{{ $article->likes()->count() }}</span>)
+                </button>
+            </div>
+
+            @include('partials.share-buttons', ['article' => $article])
+
             <hr class="mt-4">
 
             {{-- Approved comments --}}
@@ -91,4 +107,24 @@
             @endforeach
         </div>
     </div>
+    @push('scripts')
+        <script>
+            document.getElementById('likeBtn').addEventListener('click', function() {
+                const slug = this.getAttribute('data-article');
+                fetch(`/article/${slug}/like`, {
+                        method: 'POST',
+                        headers: {
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                            'Accept': 'application/json',
+                        },
+                    })
+                    .then(res => res.json())
+                    .then(data => {
+                        document.getElementById('likeCount').textContent = data.count;
+                        this.classList.toggle('btn-danger', data.liked);
+                        this.classList.toggle('btn-outline-danger', !data.liked);
+                    });
+            });
+        </script>
+    @endpush
 @endsection

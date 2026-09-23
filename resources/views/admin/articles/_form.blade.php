@@ -95,11 +95,23 @@
 </div>
 
 <div class="mb-3">
-    <label class="form-label">ট্যাগ (কমা দিয়ে আলাদা করুন)</label>
-    <input type="text" name="tags" class="form-control"
-        value="{{ old('tags', isset($article) ? $article->tags->pluck('name')->implode(', ') : '') }}"
-        placeholder="যেমন: নির্বাচন, ঢাকা, অর্থনীতি">
+    <label class="form-label">ট্যাগ (একাধিক সিলেক্ট করতে পারবেন)</label>
     @if (isset($tags) && $tags->count())
-        <small class="text-muted">বিদ্যমান ট্যাগ: {{ $tags->pluck('name')->implode(', ') }}</small>
+        <div class="border rounded p-3 d-flex flex-wrap gap-2">
+            @php
+                $selectedTagIds = isset($article) ? $article->tags->pluck('id')->toArray() : [];
+            @endphp
+            @foreach ($tags as $tag)
+                <div class="form-check form-check-inline m-0">
+                    <input class="form-check-input" type="checkbox" name="tag_ids[]" id="tag{{ $tag->id }}"
+                        value="{{ $tag->id }}"
+                        {{ in_array($tag->id, old('tag_ids', $selectedTagIds)) ? 'checked' : '' }}>
+                    <label class="form-check-label" for="tag{{ $tag->id }}">{{ $tag->name }}</label>
+                </div>
+            @endforeach
+        </div>
+    @else
+        <p class="text-muted small">কোনো ট্যাগ নেই। প্রথমে <a href="{{ route('admin.tags.index') }}"
+                target="_blank">ট্যাগ পেজ</a> থেকে কিছু ট্যাগ তৈরি করুন।</p>
     @endif
 </div>

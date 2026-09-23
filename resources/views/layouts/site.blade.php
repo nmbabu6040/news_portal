@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>@yield('title', $settings->site_name)</title>
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta name="description" content="@yield('meta_description', $settings->about_text ?: 'বাংলাদেশ ও বিশ্বের সর্বশেষ সংবাদ')">
 
     @hasSection('meta_image')
@@ -164,7 +165,32 @@
         .tag-cloud a:hover {
             background: #c00;
         }
+
+        #backToTop {
+            position: fixed;
+            bottom: 25px;
+            right: 25px;
+            width: 45px;
+            height: 45px;
+            background: #c00;
+            color: #fff;
+            border: none;
+            border-radius: 50%;
+            font-size: 1.2rem;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, .3);
+            z-index: 999;
+            transition: background .2s;
+        }
+
+        #backToTop:hover {
+            background: #900;
+        }
     </style>
+
+
     @stack('styles')
 </head>
 
@@ -391,7 +417,30 @@
         </div>
     </footer>
 
+    <button id="backToTop" title="উপরে যান">
+        <i class="bi bi-arrow-up"></i>
+    </button>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        const backToTopBtn = document.getElementById('backToTop');
+
+        window.addEventListener('scroll', function() {
+            if (window.scrollY > 300) {
+                backToTopBtn.style.display = 'flex';
+            } else {
+                backToTopBtn.style.display = 'none';
+            }
+        });
+
+        backToTopBtn.addEventListener('click', function() {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        });
+    </script>
     @stack('scripts')
 </body>
 

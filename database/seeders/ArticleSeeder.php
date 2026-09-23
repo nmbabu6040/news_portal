@@ -58,7 +58,7 @@ class ArticleSeeder extends Seeder
                     'status' => 'published',
                     'type' => $type,
                     'video_url' => $type === 'video' ? $demoVideoUrl : null,
-                    'views_count' => rand(50, 5000),
+                    'views_count' => 0,
                     'published_at' => now()->subHours(rand(1, 72)),
                 ]);
 
