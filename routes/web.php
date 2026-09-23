@@ -26,6 +26,7 @@ use App\Http\Controllers\Admin\SubscriberController as AdminSubscriberController
 use App\Http\Controllers\Admin\SettingController as AdminSettingController;
 use App\Http\Controllers\Admin\PageController as AdminPageController;
 use App\Http\Controllers\Admin\UserController as AdminUserController;
+use App\Http\Controllers\Admin\ReportController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -126,8 +127,6 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::get('/settings', [AdminSettingController::class, 'edit'])->name('settings.edit');
     Route::put('/settings', [AdminSettingController::class, 'update'])->name('settings.update');
 
-
-    // Route section within admin middleware group:
     Route::get('/users', [AdminUserController::class, 'index'])->name('users.index');
     Route::get('/users/create', [AdminUserController::class, 'create'])->name('users.create');
     Route::post('/users', [AdminUserController::class, 'store'])->name('users.store');
@@ -137,4 +136,11 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::patch('/users/{user}/toggle-role', [AdminUserController::class, 'toggleRole'])->name('users.toggle-role');
 
     Route::get('/analytics', [AnalyticsController::class, 'index'])->name('analytics.index');
+
+    // ----------------------------------------------------
+    // রিপোর্ট সংক্রান্ত রুটসমূহ (Reports Routes)
+    // ----------------------------------------------------
+    Route::get('/reports', [ReportController::class, 'index'])->name('reports.index');
+    Route::get('/reports/export/{type}/{format}', [ReportController::class, 'exportExcelCsv'])->name('reports.export.excel');
+    Route::get('/reports/pdf/{type}', [ReportController::class, 'exportPdf'])->name('reports.export.pdf');
 });

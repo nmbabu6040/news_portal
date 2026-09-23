@@ -156,6 +156,13 @@
                 class="{{ request()->routeIs('admin.analytics.*') ? 'active' : '' }}"><i class="bi bi-graph-up"></i>
                 অ্যানালিটিক্স</a>
 
+            {{-- রিপোর্ট মেনু --}}
+            <a href="{{ route('admin.reports.index') }}"
+                class="nav-link {{ request()->routeIs('admin.reports.*') ? 'active' : '' }}">
+                <i class="nav-icon bi bi-bar-chart-line-fill"></i>
+                <p>রিপোর্ট ও অ্যানালিটিক্স</p>
+            </a>
+
             <div class="sidebar-heading">সংবাদ ও কনটেন্ট</div>
             <a href="{{ route('admin.articles.index') }}"
                 class="{{ request()->routeIs('admin.articles.*') ? 'active' : '' }}">
