@@ -40,20 +40,20 @@ COPY public ./public
 COPY vite.config.js ./
 RUN npm run build
 
-# Step 4: Final Production Runtime
+# Final Runtime Stage
 FROM base AS runtime
 
 COPY --from=dependencies /app /app
 COPY --from=frontend /app/public/build /app/public/build
 
-# Fix Storage & Cache Permissions
-RUN chown -R www-data:www-data /app/storage /app/bootstrap/cache \
-    && chmod -R 775 /app/storage /app/bootstrap/cache
+# Root ইউজার দিয়ে পারমিশন ফুল ওপেন করা (Railway Container Fix)
+USER root
+RUN chmod -R 777 /app/storage /app/bootstrap/cache
 
 ENV PORT=80 \
     SERVER_NAME=":80" \
     APP_ENV=production \
-    APP_DEBUG=false \
+    APP_DEBUG=true \
     LOG_CHANNEL=stderr \
     FRANKENPHP_CONFIG="web_root /app/public"
 
