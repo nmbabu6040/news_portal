@@ -52,8 +52,10 @@ ENV PORT=80 \
     SERVER_NAME=":80" \
     APP_ENV=production \
     APP_DEBUG=true \
-    LOG_CHANNEL=stderr
+    LOG_CHANNEL=stderr \
+    FRANKENPHP_CONFIG="web_root /app/public"
 
 EXPOSE 80
 
-CMD ["frankenphp", "php-cli", "-S", "0.0.0.0:80", "-t", "/app/public"]
+# FrankenPHP web server mode (Caddy worker)
+CMD ["frankenphp", "run", "--config", "/etc/caddy/Caddyfile"]
